@@ -1,4 +1,3 @@
-
 import dispatcher from './dispatcher';
 
 /**
