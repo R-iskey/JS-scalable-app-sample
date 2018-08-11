@@ -1,16 +1,16 @@
-# JS Single Page Boilerplate
+# JS Single Page Application Boilerplate
 
-Simple scalable single page application boilerplate.
+Scalable single page application boilerplate.
 Boilerplate made with love and used JS functional programming paradigms and Module/Mediator/Facade pattern.
 
-## Getting Started
+## Why?
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+If you starting to write small application and won't to use any frameworks such as
+Angular or React, then this simple boilerplate for you!
 
 ## Installing
 
 #### Requirements
-* Install GIT from [here](https://git-scm.com/downloads)
 * Node.js version >= 10.6.0, NPM version > 6.1.0, install from [here](https://nodejs.org/en/)
 
 #### Setup Project
