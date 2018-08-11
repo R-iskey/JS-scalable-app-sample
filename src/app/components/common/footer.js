@@ -1,10 +1,14 @@
-import UIHelper from '../../util/helpers';
 import dispatcher from '../../core/dispatcher';
-import EVENT_TYPES from '../../constants/events';
-import ApiConstants from '../../constants/api';
+import {
+  PAGINATION_UPDATED,
+  RECALCULATE_AVAILABLE_PAGES,
+  ROUTER_CHANGED,
+} from '../../constants/events';
+import { DEFAULT_PER_PAGE } from '../../constants/api';
+import findEl from '../../helpers/findElement';
 
 const footerModule = (() => {
-  const perPage = ApiConstants.DEFAULT_PER_PAGE;
+  const perPage = DEFAULT_PER_PAGE;
 
   let totalItems = 0;
   let currentPage = 1;
@@ -24,19 +28,19 @@ const footerModule = (() => {
     onRecalculate({ total: 0, current: 1 });
   };
 
-  dispatcher.subscribe(EVENT_TYPES.RECALCULATE_AVAILABLE_PAGES, onRecalculate);
-  dispatcher.subscribe(EVENT_TYPES.ROUTER_CHANGED, resetPagination);
+  dispatcher.subscribe(RECALCULATE_AVAILABLE_PAGES, onRecalculate);
+  dispatcher.subscribe(ROUTER_CHANGED, resetPagination);
 
   const afterViewInit = () => {
-    const container = UIHelper.findEl('.pagination');
+    const container = findEl('.pagination');
     if (!container) return false;
 
-    const btnNext = UIHelper.findEl('.next');
+    const btnNext = findEl('.next');
     if (btnNext) {
       btnNext.addEventListener('click', nextPage);
     }
 
-    const btnPrev = UIHelper.findEl('.prev');
+    const btnPrev = findEl('.prev');
     if (btnPrev) {
       btnPrev.addEventListener('click', prevPage);
     }
@@ -52,7 +56,7 @@ const footerModule = (() => {
     if (page < 1) page = 1;
     if (page > numPages()) page = numPages();
 
-    dispatcher.publish(EVENT_TYPES.PAGINATION_UPDATED, page);
+    dispatcher.publish(PAGINATION_UPDATED, page);
   };
 
   prevPage = () => {
@@ -70,7 +74,7 @@ const footerModule = (() => {
   };
 
   render = () => {
-    const footer = UIHelper.findEl('footer');
+    const footer = findEl('footer');
     if (!footer) {
       throw new Error('Please specify <footer>');
     }

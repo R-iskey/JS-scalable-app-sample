@@ -1,9 +1,14 @@
 import usersService from './users.service';
 import dispatcher from '../../core/dispatcher';
-import EVENT_TYPES from '../../constants/events';
+import {
+  PAGINATION_UPDATED,
+  RECALCULATE_AVAILABLE_PAGES,
+  USERS_RECEIVED,
+} from '../../constants/events';
 import usersItem from './usersItem';
-import UIHelper from '../../util/helpers';
+import noop from '../../helpers/noop';
 import './users.scss';
+import findEl from '../../helpers/findElement';
 
 
 /**
@@ -14,23 +19,22 @@ const usersModule = (() => {
   const SEARCH_FORM_ID = 'js-search-users';
   const USERS_LIST_ID = 'users-list';
 
-  const subscriptions = new Map();
+  let subscriptions = new Map();
   let initialized = false;
 
   const getForm = () => {
-    return UIHelper.findEl(`#${SEARCH_FORM_ID}`);
+    return findEl(`#${SEARCH_FORM_ID}`);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-
-    const input = UIHelper.findEl('input', e.target);
+    const input = findEl('input', e.target);
     if (input) {
       const needUser = input.value;
       usersService.getUsers(needUser)
         .then((data) => {
-          dispatcher.publish(EVENT_TYPES.USERS_RECEIVED, [...data.items]);
-          dispatcher.publish(EVENT_TYPES.RECALCULATE_AVAILABLE_PAGES, {
+          dispatcher.publish(USERS_RECEIVED, [...data.items]);
+          dispatcher.publish(RECALCULATE_AVAILABLE_PAGES, {
             total: data.total_count,
             current: usersService.page,
           });
@@ -38,13 +42,11 @@ const usersModule = (() => {
         .catch((error) => {
           throw new Error(error);
         });
-
     }
-    return false;
   };
 
   const onUsersReceived = (users) => {
-    const rootContainer = UIHelper.findEl(`#${USERS_LIST_ID}`);
+    const rootContainer = findEl(`#${USERS_LIST_ID}`);
     rootContainer.innerHTML = '';
 
     users.forEach((user) => {
@@ -55,7 +57,7 @@ const usersModule = (() => {
   const onPaginationUpdated = (page) => {
     usersService.setPage(page);
     onSubmit({
-      preventDefault: UIHelper.noop,
+      preventDefault: noop,
       target: getForm(),
     });
   };
@@ -69,11 +71,11 @@ const usersModule = (() => {
     if (!form) return false;
 
     form.addEventListener('submit', onSubmit);
-    const sub1 = dispatcher.subscribe(EVENT_TYPES.USERS_RECEIVED, onUsersReceived);
-    const sub2 = dispatcher.subscribe(EVENT_TYPES.PAGINATION_UPDATED, onPaginationUpdated);
+    const sub1 = dispatcher.subscribe(USERS_RECEIVED, onUsersReceived);
+    const sub2 = dispatcher.subscribe(PAGINATION_UPDATED, onPaginationUpdated);
 
-    subscriptions.set(EVENT_TYPES.USERS_RECEIVED, sub1);
-    subscriptions.set(EVENT_TYPES.PAGINATION_UPDATED, sub2);
+    subscriptions.set(USERS_RECEIVED, sub1);
+    subscriptions.set(PAGINATION_UPDATED, sub2);
 
     initialized = true;
 
@@ -98,7 +100,7 @@ const usersModule = (() => {
   const render = () => {
     return `
         <div class="users-list">
-          <form id=${SEARCH_FORM_ID} class="form-inline my-2 my-lg-0">
+          <form id='${SEARCH_FORM_ID}' class="form-inline my-2 my-lg-0">
            <input class="form-control mr-sm-2" type="search" placeholder="Search for users" aria-label="Search">
            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>

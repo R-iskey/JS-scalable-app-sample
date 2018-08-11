@@ -1,17 +1,18 @@
-import ApiBuilder from '../../core/apiBuilder';
+import Service from '../../core/service';
 
 /**
  * @class UserService
  * @author R.Keyan
  * @pattern Singleton
  */
-class UsersService {
+class UsersService extends Service {
   constructor() {
+    super();
     this.page = 1;
   }
 
   async getUsers(username) {
-    const url = ApiBuilder.buildUrl('/search/users', {
+    const url = this.buildUrl('/search/users', {
       q: `${username} in:login`,
       type: 'Users',
       page: this.page

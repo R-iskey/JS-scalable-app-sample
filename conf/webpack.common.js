@@ -5,7 +5,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const extractSass = new ExtractTextPlugin({
-  filename: '[name].[contenthash].css',
+  filename: '[name].[contenthash].css'
 });
 
 module.exports = {
@@ -49,17 +49,7 @@ module.exports = {
     }, {
       test: /\.scss$/,
       use: extractSass.extract({
-        use: [{
-          loader: 'css-loader',
-          options: {
-            sourceMap: true,
-          },
-        }, {
-          loader: 'sass-loader',
-          options: {
-            sourceMap: true,
-          },
-        }],
+        use: 'css-loader!sass-loader',
         // use style-loader in development
         fallback: 'style-loader',
       }),

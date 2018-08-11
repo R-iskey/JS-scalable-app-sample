@@ -1,5 +1,5 @@
-import UIHelper from '../../util/helpers';
 import router from '../../core/router';
+import findEl from '../../helpers/findElement';
 
 const headerModule = (() => {
 
@@ -29,7 +29,7 @@ const headerModule = (() => {
 
 
   const render = (routes) => {
-    const header = UIHelper.findEl('header');
+    const header = findEl('header');
     if (!header) {
       throw Error('Please set <header> tag');
     }
@@ -49,7 +49,7 @@ const headerModule = (() => {
     `;
     header.innerHTML = template;
 
-    const ul = UIHelper.findEl(`#${NAVBAR_MENU_LIST_ID}`);
+    const ul = findEl(`#${NAVBAR_MENU_LIST_ID}`);
     if (ul) {
       ul.addEventListener('click', onClick);
     }

@@ -1,4 +1,5 @@
 import dispatcher from './dispatcher';
+import { ROUTER_CHANGED } from '../constants/events';
 
 /**
  * @module Router
@@ -10,7 +11,8 @@ const router = {
 
   /**
    * Routing mode
-   * @type string{history/hash}
+   * @type {string}
+   * @default 'history'
    */
   mode: '',
 
@@ -38,13 +40,15 @@ const router = {
     this.outletRoot = options.routerOutlet || document.getElementById('router-outlet');
     return this;
   },
+
   /**
-   * get url fragment
+   * @description Get url Fragment
    * @returns {*}
    */
   getFragment() {
     let fragment = '';
     const { location } = window;
+
     if (this.mode === 'history') {
       fragment = this.clearSlashes(decodeURI(location.pathname + location.search));
       fragment = fragment.replace(/\?(.*)$/, '');
@@ -53,7 +57,6 @@ const router = {
       const match = window.location.href.match(/#(.*)$/);
       fragment = match ? match[1] : '';
     }
-
     return this.clearSlashes(fragment);
   },
 
@@ -63,16 +66,19 @@ const router = {
       .replace(/^\//, '');
   },
 
+  /**
+   * Register route
+   * @param re
+   * @param module
+   * @returns Self{Object}
+   */
   add(re, module) {
     /* eslint no-param-reassign: 0 */
     if (typeof re === 'function') {
       module = re;
       re = '';
     }
-    this.routes.push({
-      re,
-      module,
-    });
+    this.routes.push({ re, module });
     return this;
   },
 
@@ -94,48 +100,51 @@ const router = {
     this.root = '/';
     return this;
   },
+
   /**
-   * check url and run module with lifecycles
-   * @param f
-   * @returns {router}
+   * @description check url and run module with component lifecycles
+   * component's available lifecycles: afterViewInit, destroy
+   * component's 'render' method call every time when we change route
+   * @param fragment
+   * @returns Self{Object}
    */
-  check(f) {
-    const fragment = f || this.getFragment();
+  check(fragment = this.getFragment()) {
     this.routes.forEach((route) => {
       const match = fragment.match(route.re);
       const { module } = route;
+
       if (match) {
         match.shift();
-        let htmlTemplate = '';
         this.outletRoot.innerHTML = '';
-        if (module.render) {
-          htmlTemplate = module.render();
-          if (!htmlTemplate || typeof htmlTemplate !== 'string') {
-            throw new Error('Modules render method should return HTML string');
-          }
+
+        const htmlTemplate = module.render ? module.render() : '';
+        if (!htmlTemplate || typeof htmlTemplate !== 'string') {
+          throw new Error('Modules render method should return HTML string');
         }
         this.outletRoot.innerHTML = htmlTemplate;
+
         if (module.afterViewInit) {
           module.afterViewInit();
         }
-        dispatcher.publish('$ROUTER_CHANGED', fragment);
+        dispatcher.publish(ROUTER_CHANGED, fragment);
       } else if (module.destroy) {
         module.destroy();
       }
     });
     return this;
   },
+
   /**
-   * Keep updated route changes
+   * Keep updates from route changes
    * @returns {router}
    */
   listen() {
-    const self = this;
-    let current = self.getFragment();
+    const that = this;
+    let current = that.getFragment();
     const fn = function () {
-      if (current !== self.getFragment()) {
-        current = self.getFragment();
-        self.check(current);
+      if (current !== that.getFragment()) {
+        current = that.getFragment();
+        that.check(current);
       }
     };
     clearInterval(this.interval);
@@ -149,7 +158,6 @@ const router = {
     } else {
       window.location.href = `${window.location.href.replace(/#(.*)$/, '')}#${path}`;
     }
-
     return this;
   },
 };

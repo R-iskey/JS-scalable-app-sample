@@ -1,6 +1,6 @@
 /**
  * @name: Dispatcher
- * @description: Mediator pattern (Pub/Sub) for modules
+ * @description: Mediator pattern, Pub/Sub functionality
  * @autor R.Keyan
  */
 function dispatcher() {

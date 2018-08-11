@@ -16,6 +16,7 @@
         "no-param-reassign": ["error", { "props": false }],
         "padded-blocks": ["error", { "classes": "never" }],
         "comma-dangle": ["error", "only-multiline"],
-        "arrow-body-style": ["error", "always"]
+        "arrow-body-style": ["error", "always"],
+        "prefer-const": "warn"
     }
 }

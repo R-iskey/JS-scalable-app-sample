@@ -1,17 +1,18 @@
-import ApiBuilder from '../../core/apiBuilder';
+import Service from '../../core/service';
 
 /**
  * @class ReposService
  * @author R.Keyan
  * @pattern Singleton
  */
-class ReposService {
+class ReposService extends Service {
   constructor() {
+    super();
     this.page = 1;
   }
 
   async getUsers(username) {
-    const url = ApiBuilder.buildUrl('/search/repositories', {
+    const url = this.buildUrl('/search/repositories', {
       q: `${username} in`,
       type: 'Repositories',
       page: this.page
