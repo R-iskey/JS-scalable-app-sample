@@ -1,17 +1,17 @@
 # JS Single Page Application Boilerplate
 
-Scalable single page application boilerplate.
-Boilerplate made with love and used JS functional programming paradigms and Module/Mediator/Facade pattern.
+Scalable JS SPA boilerplate.
+Boilerplate made with love, based on JS functional programming paradigms
+and Module/Mediator/Facade patterns.
 
-## Why?
-
-If you starting to write small application and won't to use any frameworks such as
-Angular or React, then this simple boilerplate for you!
+## Motivation
+If you starting to write simple but powerful application and won't to use any frameworks such as
+Angular or React, then this boilerplate for you!
 
 ## Installing
 
 #### Requirements
-* Node.js version >= 10.6.0, NPM version > 6.1.0, install from [here](https://nodejs.org/en/)
+* Node.js version >= 8.6.0, NPM version > 6.1.0, install from [here](https://nodejs.org/en/)
 
 #### Setup Project
 For first you will need to
